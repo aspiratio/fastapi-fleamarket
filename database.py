@@ -13,3 +13,11 @@ SessionLocal = sessionmaker(
 )  # DBに対する操作をひとまとめにしてDBに適用するためのセッション
 
 Base = declarative_base()  # DBモデルを作成するためのベースとなるクラス
+
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db  # yieldを使用するとFastAPIがレスポンスを返した後に後続処理を行える → finallyのclose()を確実に実行させる
+    finally:
+        db.close()

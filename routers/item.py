@@ -1,7 +1,14 @@
-from fastapi import APIRouter, Path, Query, HTTPException
+from typing import Annotated
+from fastapi import APIRouter, Path, Query, HTTPException, Depends
+from sqlalchemy.orm import Session
 from starlette import status
 from cruds import item as item_cruds
 from schemas import ItemCreate, ItemUpdate, ItemResponse
+from database import get_db
+
+
+DbDependency = Annotated[Session, Depends(get_db)]  # Dependency Injection
+
 
 router = APIRouter(prefix="/items", tags=["Items"])  # prefix=共通のパス, tags=[ルーターの名前]
 
