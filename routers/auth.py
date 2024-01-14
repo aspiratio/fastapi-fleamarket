@@ -1,3 +1,4 @@
+from datetime import timedelta
 from typing import Annotated
 from fastapi import APIRouter, Path, Query, HTTPException, Depends
 from fastapi.security import OAuth2PasswordRequestForm
@@ -5,7 +6,7 @@ from sqlalchemy.orm import Session
 from starlette import status
 from cruds import auth as auth_cruds
 from routers.item import DbDependency
-from schemas import UserCreate, UserResponse
+from schemas import UserCreate, UserResponse, Token
 from database import get_db
 
 
@@ -26,10 +27,13 @@ async def create_user(db: DbDependency, user_create: UserCreate):
     return auth_cruds.create_user(db, user_create)
 
 
-@router.post("/login", status_code=status.HTTP_200_OK)
+@router.post("/login", response_model=Token, status_code=status.HTTP_200_OK)
 async def loign(db: DbDependency, form_data: FormDependency):
     user = auth_cruds.authenticate_user(db, form_data.username, form_data.password)
     if not user:
         raise HTTPException(status_code=401, detail="Incorrect username or password")
 
-    return "Successful Authentication"
+    token = auth_cruds.create_access_token(
+        user.username, user.id, timedelta(minutes=20)
+    )
+    return {"access_token": token, "token_type": "bearer"}
