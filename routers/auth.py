@@ -1,5 +1,6 @@
 from typing import Annotated
 from fastapi import APIRouter, Path, Query, HTTPException, Depends
+from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from starlette import status
 from cruds import auth as auth_cruds
@@ -12,6 +13,10 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 
 
 DbDependency = Annotated[Session, Depends(get_db)]
+FormDependency = Annotated[
+    OAuth2PasswordRequestForm,
+    Depends(),  # 本当は Depends(OAuth2PasswordRequestForm)] だが、第一引数と同じなので Depends() の引数は省略可能
+]
 
 
 @router.post(
@@ -19,3 +24,12 @@ DbDependency = Annotated[Session, Depends(get_db)]
 )
 async def create_user(db: DbDependency, user_create: UserCreate):
     return auth_cruds.create_user(db, user_create)
+
+
+@router.post("/login", status_code=status.HTTP_200_OK)
+async def loign(db: DbDependency, form_data: FormDependency):
+    user = auth_cruds.authenticate_user(db, form_data.username, form_data.password)
+    if not user:
+        raise HTTPException(status_code=401, detail="Incorrect username or password")
+
+    return "Successful Authentication"
