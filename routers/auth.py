@@ -36,4 +36,4 @@ async def loign(db: DbDependency, form_data: FormDependency):
     token = auth_cruds.create_access_token(
         user.username, user.id, timedelta(minutes=20)
     )
-    return {"access_token": token, "token_type": "bearer"}
+    return {"access_token": token, "token_type": "bearer"}  # . https://jwt.io/ でデバッグできる
