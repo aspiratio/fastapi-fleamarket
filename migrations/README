@@ -1,1 +1,5 @@
-Generic single-database configuration.
+# マイグレーションファイルの生成コマンド
+alembic revision --autogenerate -m "任意のコメント"
+
+# マイグレーションの反映コマンド
+alembic upgrade head
