@@ -47,6 +47,7 @@ def user_fixture():
 
 
 # APIにアクセスして結果を取得するためのクライアント
+@pytest.fixture()
 def client_fixture(session_fixture: Session, user_fixture: DecodedToken):
     def override_get_db():
         return session_fixture
