@@ -43,7 +43,7 @@ class UserCreate(BaseModel):
 
 
 class UserResponse(BaseModel):
-    id: int = Field(gp=0, examples=[1])
+    id: int = Field(gt=0, examples=[1])
     username: str = Field(min_length=2, examples=["user1"])
     created_at: datetime
     updated_at: datetime
