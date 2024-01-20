@@ -1,10 +1,10 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
+from config import get_settings
 
 
-SQLALCHEMY_DATABASE_URL = (
-    "postgresql://fastapiuser:fastapipass@0.0.0.0:5432/fleamarket"  # DBへの接続情報
-)
+SQLALCHEMY_DATABASE_URL = get_settings().sqlalchemy_database_url  # DBへの接続情報
+
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)  # DBへの接続を保持したエンジン
 
